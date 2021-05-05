@@ -1,30 +1,47 @@
 import Head from 'next/head'
-import {Box, Flex, Heading, Text} from '@chakra-ui/core';
+//import {Box, Flex, Heading, Text} from '@chakra-ui/core';
+
+import Container from '../components/container'
+import Intro from '../components/intro'
+import Layout from '../components/layout'
+import HeroPost from '../components/hero-post'
+import { getAllPostsForHome } from '../lib/api'
+
+
 
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+export default function Index({ allPosts: { edges }, preview }) {
+  const heroPost = edges[0]?.node
+  
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>20210429</title>
-        <meta name="description" content="Basic setup by kbrenes" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Box className={styles.main}>
-        <Flex>
-          <Heading>
-            <Text opacity="0.7" fontSize="lg" mt="6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras eleifend hendrerit leo eget ullamcorper. Integer id mauris id odio faucibus varius. Vestibulum dapibus lacus massa, ut mattis erat iaculis a. Donec facilisis sapien a vulputate consectetur. Vivamus consequat hendrerit dignissim. Pellentesque cursus blandit felis a facilisis. Nunc in viverra libero, nec ultrices risus. Aliquam erat volutpat. Donec in turpis interdum, luctus erat vel, ullamcorper quam. Integer cursus eros molestie est ornare, quis tincidunt ante imperdiet. Quisque at arcu aliquet, aliquam diam quis, elementum tortor.
-            </Text>
-          </Heading>
-        </Flex>
-      </Box>
-
-      <footer className={styles.footer}>
-        
-      </footer>
-    </div>
+    <>
+      <Layout preview={preview}>
+        <Head>
+          <title>Next.js Blog Example with WP - GraphQL</title>
+        </Head>
+        <Container>
+          <Intro />
+          {heroPost && (
+            <HeroPost
+              title={heroPost.title}
+              coverImage={heroPost.featuredImage?.node}
+              date={heroPost.date}
+              author={heroPost.author?.node}
+              slug={heroPost.slug}
+              excerpt={heroPost.excerpt}
+            />
+          )}
+          {/* {morePosts.length > 0 && <MoreStories posts={morePosts} />} */}
+        </Container>
+      </Layout>
+    </>
   )
+}
+
+export async function getStaticProps({ preview = false }) {
+  const allPosts = await getAllPostsForHome(preview)
+  return {
+    props: { allPosts, preview },
+  }
 }
