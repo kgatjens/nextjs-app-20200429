@@ -7,13 +7,11 @@ import Layout from '../components/layout'
 import HeroPost from '../components/hero-post'
 import { getAllPostsForHome } from '../lib/api'
 
-
-
 import styles from '../styles/Home.module.css'
 
 export default function Index({ allPosts: { edges } }) {
   const heroPost = edges[0]?.node
-  
+  console.log(heroPost);
   return (
     <>
       <Layout>
